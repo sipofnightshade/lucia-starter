@@ -103,6 +103,9 @@ devDependencies:
   svelte-check:
     specifier: ^3.6.0
     version: 3.6.8(postcss-load-config@5.0.3)(postcss@8.4.37)(svelte@4.2.12)
+  svelte-radix:
+    specifier: ^1.1.0
+    version: 1.1.0(svelte@4.2.12)
   tailwindcss:
     specifier: ^3.3.6
     version: 3.4.1
@@ -3885,6 +3888,14 @@ packages:
       strip-indent: 3.0.0
       svelte: 4.2.12
       typescript: 5.4.2
+    dev: true
+
+  /svelte-radix@1.1.0(svelte@4.2.12):
+    resolution: {integrity: sha512-kyE9wZiJV937INGb+wiBkAjmGtQUUYRPkVL2Q+/gj+9Vog1Ewd2wNvNmpNMUd+c+euxoc5u5YZMuCUgky9EUPw==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0 || ^5.0.0
+    dependencies:
+      svelte: 4.2.12
     dev: true
 
   /svelte-sonner@0.3.19(svelte@4.2.12):
