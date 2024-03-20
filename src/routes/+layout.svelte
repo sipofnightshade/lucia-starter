@@ -7,4 +7,11 @@
 <ModeWatcher />
 <slot />
 
-<!-- <ModeToggle /> -->
+<ModeToggle />
+
+<style lang="postcss">
+	:global(body) {
+		color: theme(colors.foreground);
+		background: theme(colors.background);
+	}
+</style>

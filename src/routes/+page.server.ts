@@ -1,5 +1,17 @@
 import { lucia } from '$lib/server/luciaAuth';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+// superforms
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { loginSchema, signupSchema } from '$lib/validation/authSchema';
+
+export const load = (async () => {
+	const loginForm = await superValidate(zod(loginSchema));
+	const signupForm = await superValidate(zod(signupSchema));
+
+	return { loginForm, signupForm };
+}) satisfies PageServerLoad;
 
 export const actions: Actions = {
 	logout: async (event) => {

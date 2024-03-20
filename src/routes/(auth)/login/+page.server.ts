@@ -1,46 +1,41 @@
+// sveltekit
+import type { Actions, PageServerLoad } from './$types';
+// lucia auth
 import { lucia } from '$lib/server/luciaAuth';
 import { fail, redirect } from '@sveltejs/kit';
 import { Argon2id } from 'oslo/password';
+// database
 import { db } from '$lib/server/db';
-
-import type { Actions, PageServerLoad } from './$types';
 import { userTable } from '$lib/server/schema';
+import { loginSchema } from '$lib/validation/authSchema';
 import { eq } from 'drizzle-orm';
+// superforms
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 // If signed in user visits Login page, redirect them to home
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) redirect(302, '/');
+
+	return {
+		form: await superValidate(zod(loginSchema))
+	};
 };
 
 export const actions: Actions = {
 	default: async (event) => {
-		// 1. Get username and password from form data
-		const formData = await event.request.formData();
-		const username = formData.get('username');
-		const password = formData.get('password');
+		// 1. Get form data and validate it
+		const form = await superValidate(event, zod(loginSchema));
 
-		// 2. Validate username format
-		if (
-			typeof username !== 'string' ||
-			username.length < 3 ||
-			username.length > 31 ||
-			!/^[a-z0-9_-]+$/.test(username)
-		) {
+		if (!form.valid) {
 			return fail(400, {
-				message: 'Invalid username'
-			});
-		}
-
-		// 3. Validate password length
-		if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
-			return fail(400, {
-				message: 'Invalid password'
+				form
 			});
 		}
 
 		// 4. Check for existing user with username (consider security implications in comments)
 		const existingUser = await db.query.userTable.findFirst({
-			where: eq(userTable.username, username)
+			where: eq(userTable.username, form.data.username)
 		});
 
 		// 5. Handle non-existent username (avoid revealing valid usernames)
@@ -60,7 +55,10 @@ export const actions: Actions = {
 		}
 
 		// 6. Verify password using secure hashing algorithm
-		const validPassword = await new Argon2id().verify(existingUser.hashedPassword, password);
+		const validPassword = await new Argon2id().verify(
+			existingUser.hashedPassword,
+			form.data.password
+		);
 		if (!validPassword) {
 			return fail(400, {
 				message: 'Incorrect username or password'
@@ -76,6 +74,6 @@ export const actions: Actions = {
 		});
 
 		// 8. Redirect user to protected route
-		redirect(302, '/protected');
+		redirect(302, '/');
 	}
 };
