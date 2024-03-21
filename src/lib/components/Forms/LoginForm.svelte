@@ -79,6 +79,6 @@
 
 	<div class="mt-4 flex gap-x-1 text-sm">
 		<p class="text-muted-foreground">Don't have an account yet?</p>
-		<a href="/login" class="text-accent-foreground">Register</a>
+		<a href="/register" class="text-accent-foreground">Register</a>
 	</div>
 </div>

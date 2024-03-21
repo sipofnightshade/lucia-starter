@@ -12,22 +12,24 @@
 </script>
 
 <div class="m-16 flex flex-col gap-8">
-	<div>
-		<h2 class="font-semibold">Links</h2>
+	{#if !user}
+		<div>
+			<h2 class="font-semibold">Links</h2>
 
-		<Button href="/signup" variant="outline">Signup</Button>
-		<Button href="/login" variant="outline">Login</Button>
-	</div>
+			<Button href="/signup" variant="outline">Signup</Button>
+			<Button href="/login" variant="outline">Login</Button>
+		</div>
 
-	<div>
-		<h2 class="font-semibold">Modal Buttons</h2>
-		<Button>
-			<LoginModal data={loginForm} />
-		</Button>
-		<Button>
-			<SignupModal data={signupForm} />
-		</Button>
-	</div>
+		<div>
+			<h2 class="font-semibold">Modal Buttons</h2>
+			<Button>
+				<LoginModal data={loginForm} />
+			</Button>
+			<Button>
+				<SignupModal data={signupForm} />
+			</Button>
+		</div>
+	{/if}
 
 	{#if user}
 		<div>
