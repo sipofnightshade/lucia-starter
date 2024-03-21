@@ -25,16 +25,14 @@ the logged out state.
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="w-72 rounded-lg">
 		<DropdownMenu.Group>
-			<DropdownMenu.Label class="m-0 flex flex-col px-2 py-3 text-base">
-				<span class="font-semibold">{user.name}</span>
-				<span class="m-0 font-normal text-muted-foreground"
-					>{user.email.toLowerCase()}@email.com</span
-				>
+			<DropdownMenu.Label class="m-0 px-2 py-3 text-base">
+				<p class="font-semibold">{user.name}</p>
+				<p class="m-0 text-sm font-normal text-muted-foreground">{user.email.toLowerCase()}</p>
 			</DropdownMenu.Label>
 			<DropdownMenu.Separator />
 			<form method="post" action="/?/logout" use:enhance>
 				<button
-					class="relative flex w-full select-none items-center gap-x-6 rounded-sm px-2 py-3 text-base text-muted-foreground outline-none transition-colors hover:bg-muted data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50"
+					class="relative flex w-full select-none items-center gap-x-4 rounded-sm px-2 py-3 text-base text-muted-foreground outline-none transition-colors hover:bg-muted data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50"
 				>
 					<Exit size={20} />
 					<span>Sign out</span>
