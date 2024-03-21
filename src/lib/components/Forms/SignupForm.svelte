@@ -56,11 +56,20 @@
 	<Divider />
 
 	<form class="flex flex-col gap-y-2" method="POST" use:enhance>
-		<!-- username -->
-		<Form.Field {form} name="username">
+		<!-- name -->
+		<Form.Field {form} name="name">
 			<Form.Control let:attrs>
-				<Form.Label>Username</Form.Label>
-				<Input {...attrs} bind:value={$formData.username} />
+				<Form.Label>Full Name</Form.Label>
+				<Input {...attrs} bind:value={$formData.name} />
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<!-- email -->
+		<Form.Field {form} name="email">
+			<Form.Control let:attrs>
+				<Form.Label>Email</Form.Label>
+				<Input {...attrs} bind:value={$formData.email} />
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
@@ -69,7 +78,7 @@
 		<Form.Field {form} name="password">
 			<Form.Control let:attrs>
 				<Form.Label>Password</Form.Label>
-				<Input {...attrs} bind:value={$formData.password} />
+				<Input type="password" {...attrs} bind:value={$formData.password} />
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>

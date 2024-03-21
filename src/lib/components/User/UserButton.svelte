@@ -5,7 +5,7 @@
 	import Exit from 'svelte-radix/Exit.svelte';
 	import { enhance } from '$app/forms';
 
-	export let username: string;
+	export let user: { name: string; email: string };
 </script>
 
 <!-- @component
@@ -26,14 +26,15 @@ the logged out state.
 	<DropdownMenu.Content class="w-72 rounded-lg">
 		<DropdownMenu.Group>
 			<DropdownMenu.Label class="m-0 flex flex-col px-2 py-3 text-base">
-				<span class="font-semibold">{username}</span>
-				<span class="m-0 font-normal text-muted-foreground">{username.toLowerCase()}@email.com</span
+				<span class="font-semibold">{user.name}</span>
+				<span class="m-0 font-normal text-muted-foreground"
+					>{user.email.toLowerCase()}@email.com</span
 				>
 			</DropdownMenu.Label>
 			<DropdownMenu.Separator />
 			<form method="post" action="/?/logout" use:enhance>
 				<button
-					class="relative flex select-none items-center gap-x-6 rounded-sm px-2 px-2 py-1.5 py-3 text-base text-sm text-muted-foreground outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50"
+					class="relative flex w-full select-none items-center gap-x-6 rounded-sm px-2 py-3 text-base text-muted-foreground outline-none transition-colors hover:bg-muted data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50"
 				>
 					<Exit size={20} />
 					<span>Sign out</span>

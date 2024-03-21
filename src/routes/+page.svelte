@@ -32,7 +32,7 @@
 	{#if user}
 		<div>
 			<h2 class="font-semibold">User Button</h2>
-			<UserButton username={user.username} />
+			<UserButton {user} />
 		</div>
 	{/if}
 
