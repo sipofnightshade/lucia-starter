@@ -6,11 +6,10 @@
 	import { loginSchema, type LoginSchema } from '$lib/validation/authSchema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { Button } from '$lib/components/ui/button';
-	import { Google, Github } from '$lib/Icons';
 	import Divider from '$lib/components/Forms/Divider.svelte';
 
 	import { mediaQuery } from 'svelte-legos';
+	import OAuthButtons from '$lib/components/Forms/OAuthButtons.svelte';
 
 	export let data: SuperValidated<Infer<LoginSchema>>;
 	export let showBadge: boolean = false;
@@ -35,16 +34,7 @@
 	{/if}
 
 	<FormHeader title="Login" description="Choose your preferred login method!" />
-
-	<section>
-		<Button variant="outline" class="h-12 w-12 p-3">
-			<Google />
-		</Button>
-		<Button variant="outline" class="h-12 w-12 p-3">
-			<Github class="dark:strok-red-500" />
-		</Button>
-	</section>
-
+	<OAuthButtons />
 	<Divider />
 
 	<form class="flex flex-col gap-y-2" method="POST" use:enhance>

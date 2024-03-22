@@ -2,12 +2,11 @@
 	// components
 	import * as Form from '$lib/components/ui/form';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
+	import OAuthButtons from '$lib/components/Forms/OAuthButtons.svelte';
 	import Divider from '$lib/components/Forms/Divider.svelte';
 	// superforms
 	import { loginSchema, type LoginSchema } from '$lib/validation/authSchema';
-	import { Google, Github } from '$lib/Icons';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
@@ -31,14 +30,7 @@
 			<Dialog.Description>Choose your preferred login method!</Dialog.Description>
 		</Dialog.Header>
 
-		<section>
-			<Button variant="outline" class="h-12 w-12 p-3">
-				<Google />
-			</Button>
-			<Button variant="outline" class="h-12 w-12 p-3">
-				<Github class="dark:strok-red-500" />
-			</Button>
-		</section>
+		<OAuthButtons />
 
 		<Divider />
 

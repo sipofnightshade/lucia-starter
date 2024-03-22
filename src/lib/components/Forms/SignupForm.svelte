@@ -9,6 +9,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Google, Github } from '$lib/Icons';
 	import Divider from '$lib/components/Forms/Divider.svelte';
+	import OAuthButtons from '$lib/components/Forms/OAuthButtons.svelte';
 
 	import { mediaQuery } from 'svelte-legos';
 
@@ -34,16 +35,7 @@
 	{/if}
 
 	<FormHeader title="Create your account" description="Join with your preferred social account!" />
-
-	<section>
-		<Button variant="outline" class="h-12 w-12 p-3">
-			<Google />
-		</Button>
-		<Button variant="outline" class="h-12 w-12 p-3">
-			<Github class="dark:strok-red-500" />
-		</Button>
-	</section>
-
+	<OAuthButtons />
 	<Divider />
 
 	<form class="flex flex-col gap-y-2" method="POST" use:enhance>
