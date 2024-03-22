@@ -4,9 +4,10 @@
 	import UserIcon from './UserIcon.svelte';
 	import Exit from 'svelte-radix/Exit.svelte';
 	import { enhance } from '$app/forms';
-	import { Button } from '$lib/components/ui/button';
+	import type { User } from 'lucia';
 
-	export let user: { name: string; email: string };
+	export let user: User;
+
 </script>
 
 <!-- @component
@@ -18,7 +19,7 @@ the logged out state.
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger>
 		<Avatar.Root class="border-2">
-			<Avatar.Image src="" alt="@shadcn" />
+			<Avatar.Image src={user.avatarUrl} alt="profile" />
 			<Avatar.Fallback>
 				<UserIcon />
 			</Avatar.Fallback>
