@@ -1,5 +1,7 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
+	import AuthBadge from '$lib/components/Forms/AuthBadge.svelte';
+	import FormHeader from '$lib/components/Forms/FormHeader.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { loginSchema, type LoginSchema } from '$lib/validation/authSchema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
@@ -29,21 +31,10 @@
 		'border shadow-xl'}"
 >
 	{#if showBadge && showFormContainer}
-		<div
-			class="absolute -left-[76px] top-24 -rotate-90 rounded-t-md bg-accent-foreground px-3 py-1"
-		>
-			<p class="flex gap-x-1.5 text-xs tracking-wide text-background">
-				<span>Protected by</span>
-				<strong class="text-accent">lucia</strong>
-			</p>
-		</div>
+		<AuthBadge />
 	{/if}
-	<div>
-		<h1 class="text-xl font-bold">Login</h1>
-		<p class="mt-px text-sm leading-tight text-muted-foreground">
-			Choose your preferred login method!
-		</p>
-	</div>
+
+	<FormHeader title="Login" description="Choose your preferred login method!" />
 
 	<section>
 		<Button variant="outline" class="h-12 w-12 p-3">
@@ -79,6 +70,6 @@
 
 	<div class="mt-4 flex gap-x-1 text-sm">
 		<p class="text-muted-foreground">Don't have an account yet?</p>
-		<a href="/register" class="text-accent-foreground">Register</a>
+		<a href="/signup" class="text-accent-foreground">Signup</a>
 	</div>
 </div>

@@ -65,7 +65,7 @@
 
 		<div class="mt-4 flex gap-x-1 text-sm">
 			<p>Don't have an account yet?</p>
-			<a href="/register" class="text-accent-foreground">Register</a>
+			<a href="/signup" class="text-accent-foreground">Signup</a>
 		</div>
 	</Dialog.Content>
 </Dialog.Root>
