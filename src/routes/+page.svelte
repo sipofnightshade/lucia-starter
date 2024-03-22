@@ -32,9 +32,16 @@
 	{/if}
 
 	{#if user}
-		<div>
+		<div class="flex w-fit flex-col gap-y-2">
 			<h2 class="font-semibold">User Button</h2>
 			<UserButton {user} />
+		</div>
+	{/if}
+
+	{#if user && !user.isEmailVerified}
+		<div class="flex w-fit flex-col gap-y-2">
+			<h2 class="font-semibold">Verification</h2>
+			<Button href="/email-verification" variant="outline">Verify Email</Button>
 		</div>
 	{/if}
 

@@ -11,6 +11,11 @@ import type { Actions, PageServerLoad } from './$types';
 // database
 import { signupSchema } from '$lib/validation/authSchema';
 import { checkIfEmailExists, createUser } from '$lib/server/dbUtils';
+import {
+	PENDING_USER_VERIFICATION_COOKIE_NAME,
+	generateEmailVerificationCode,
+	sendEmailVerificationCode
+} from '$lib/server/luciaAuthUtils';
 
 // If signed in user visits Signup page, redirect them to home
 export const load: PageServerLoad = async (event) => {
@@ -22,9 +27,9 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-	default: async (event) => {
+	default: async ({ request, cookies }) => {
 		// Get form data and validate it
-		const form = await superValidate(event, zod(signupSchema));
+		const form = await superValidate(request, zod(signupSchema));
 
 		if (!form.valid) {
 			return fail(400, {
@@ -34,6 +39,7 @@ export const actions: Actions = {
 
 		// Generate unique user ID and hash password
 		const userId = generateId(15);
+		const userEmail = form.data.email;
 		const hashedPassword = await new Argon2id().hash(form.data.password);
 
 		try {
@@ -46,13 +52,34 @@ export const actions: Actions = {
 				id: userId,
 				name: form.data.name,
 				email: form.data.email,
+				isEmailVerified: false,
 				password: hashedPassword
+			});
+
+			const emailVerificationCode = await generateEmailVerificationCode(userId, userEmail);
+
+			const sendEmailVerificationCodeResult = await sendEmailVerificationCode(
+				userEmail,
+				emailVerificationCode
+			);
+
+			if (!sendEmailVerificationCodeResult.success) {
+				return message(form, {
+					alertType: 'error',
+					alertText: sendEmailVerificationCodeResult.message
+				});
+			}
+
+			const pendingVerificationUserData = JSON.stringify({ id: userId, email: userEmail });
+
+			cookies.set(PENDING_USER_VERIFICATION_COOKIE_NAME, pendingVerificationUserData, {
+				path: '/email-verification'
 			});
 
 			// Create Lucia session and cookie
 			const session = await lucia.createSession(userId, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
-			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+			cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
 				...sessionCookie.attributes
 			});

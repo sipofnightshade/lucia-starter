@@ -18,7 +18,8 @@ export const lucia = new Lucia(adapter, {
 		return {
 			// attributes has the type of DatabaseUserAttributes below
 			name: attributes.name,
-			email: attributes.email
+			email: attributes.email,
+			isEmailVerified: attributes.isEmailVerified
 		};
 	}
 });
@@ -33,4 +34,5 @@ declare module 'lucia' {
 interface DatabaseUserAttributes {
 	name: string;
 	email: string;
+	isEmailVerified: boolean;
 }
