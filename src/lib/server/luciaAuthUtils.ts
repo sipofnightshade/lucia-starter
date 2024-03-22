@@ -1,23 +1,19 @@
-import { RESEND_API_KEY } from '$env/static/private';
+//sveltekit
 import type { Cookies } from '@sveltejs/kit';
-
+//database
+import { db } from './db';
 import { eq } from 'drizzle-orm';
+import { emailVerificationCodesTable } from './schema';
+//auth
 import { TimeSpan, type Lucia } from 'lucia';
 import { createDate, isWithinExpirationDate } from 'oslo';
 import { alphabet, generateRandomString } from 'oslo/crypto';
+import { EMAIL_VERIFICATION_CODE_LENGTH } from '$lib/validation/authSchema';
+// resend
+import { RESEND_API_KEY } from '$env/static/private';
 import { Resend } from 'resend';
 
-import { EMAIL_VERIFICATION_CODE_LENGTH } from '$lib/validation/authSchema';
-import { db } from './db';
-import { emailVerificationCodesTable } from './schema';
-
 const resend = new Resend(RESEND_API_KEY);
-
-export const PENDING_USER_VERIFICATION_COOKIE_NAME = 'pendingUserVerification';
-export type PendingVerificationUserDataType = {
-	id: string;
-	email: string;
-};
 
 // Creates and sets session
 export const createSession = async (lucia: Lucia, userId: string, cookies: Cookies) => {

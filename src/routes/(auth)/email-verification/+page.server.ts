@@ -33,8 +33,8 @@ export const actions: Actions = {
 
 		if (!form.valid) {
 			return message(form, {
-				alertType: 'error',
-				alertText: 'Invalid verification code, please try again'
+				status: 'error',
+				text: 'Invalid verification code, please try again'
 			});
 		}
 
@@ -42,8 +42,8 @@ export const actions: Actions = {
 
 		if (isCodeValid.result === false) {
 			return message(form, {
-				alertType: 'error',
-				alertText: isCodeValid.message
+				status: 'error',
+				text: isCodeValid.message
 			});
 		}
 
@@ -73,7 +73,9 @@ export const actions: Actions = {
 		}
 
 		return {
-			message: 'A new verification code has been sent to your email'
+			message: sendVerificationCodeResult.message
 		};
+
+		// return { success: true };
 	}
 };

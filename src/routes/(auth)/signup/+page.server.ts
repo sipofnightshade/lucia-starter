@@ -11,15 +11,19 @@ import type { Actions, PageServerLoad } from './$types';
 // database
 import { signupSchema } from '$lib/validation/authSchema';
 import { checkIfEmailExists, createUser } from '$lib/server/dbUtils';
-import {
-	PENDING_USER_VERIFICATION_COOKIE_NAME,
-	generateEmailVerificationCode,
-	sendEmailVerificationCode
-} from '$lib/server/luciaAuthUtils';
+import { generateVerificationCode, sendVerificationCode } from '$lib/server/luciaAuthUtils';
 
 // If signed in user visits Signup page, redirect them to home
 export const load: PageServerLoad = async (event) => {
-	if (event.locals.user) redirect(302, '/');
+	const user = event.locals.user;
+
+	if (user && !user.isEmailVerified) {
+		redirect(302, '/email-verification');
+	}
+
+	if (user && user.isEmailVerified) {
+		redirect(302, '/');
+	}
 
 	return {
 		form: await superValidate(zod(signupSchema))
@@ -56,25 +60,19 @@ export const actions: Actions = {
 				password: hashedPassword
 			});
 
-			const emailVerificationCode = await generateEmailVerificationCode(userId, userEmail);
+			const emailVerificationCode = await generateVerificationCode(userId, userEmail);
 
-			const sendEmailVerificationCodeResult = await sendEmailVerificationCode(
+			const sendVerificationCodeResult = await sendVerificationCode(
 				userEmail,
 				emailVerificationCode
 			);
 
-			if (!sendEmailVerificationCodeResult.success) {
+			if (!sendVerificationCodeResult.result) {
 				return message(form, {
-					alertType: 'error',
-					alertText: sendEmailVerificationCodeResult.message
+					status: 'error',
+					text: sendVerificationCodeResult.message
 				});
 			}
-
-			const pendingVerificationUserData = JSON.stringify({ id: userId, email: userEmail });
-
-			cookies.set(PENDING_USER_VERIFICATION_COOKIE_NAME, pendingVerificationUserData, {
-				path: '/email-verification'
-			});
 
 			// Create Lucia session and cookie
 			const session = await lucia.createSession(userId, {});
@@ -85,11 +83,12 @@ export const actions: Actions = {
 			});
 
 			// Redirect user to home page after successful signup
-			redirect(302, '/');
+			// redirect(302, '/email-verification');
+			// ❗ User is already being redirected in the load function
 		} catch (error) {
 			return message(form, {
-				alertType: 'error',
-				alertText: 'An error occurred while processing your request. Please try again.'
+				status: 'error',
+				text: 'An error occurred while processing your request. Please try again.'
 			});
 		}
 	}

@@ -1,43 +1,58 @@
 <script lang="ts">
+	// components
 	import * as Form from '$lib/components/ui/form';
 	import { toast } from 'svelte-sonner';
 	import AuthBadge from '$lib/components/Forms/AuthBadge.svelte';
 	import FormHeader from '$lib/components/Forms/FormHeader.svelte';
 	import { Input } from '$lib/components/ui/input';
-
+	//sveltekit
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { enhance } from '$app/forms';
+	// superforms
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import {
 		emailVerificationCodeSchema,
 		type EmailVerificationCodeSchema
 	} from '$lib/validation/authSchema';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-
+	// other
 	import { mediaQuery } from 'svelte-legos';
-	import { enhance } from '$app/forms';
 
+	// props
 	export let data: SuperValidated<Infer<EmailVerificationCodeSchema>>;
 	export let showBadge: boolean = false;
 	export let showContainer: boolean = false;
 
-	// form handling
+	// verify email form handling
 	const form = superForm(data, {
 		validators: zodClient(emailVerificationCodeSchema),
 		resetForm: false,
 		taintedMessage: null,
 		onUpdated: () => {
 			if (!$message) return;
-
-			const { alertType, alertText } = $message;
-
-			if (alertType === 'error') {
-				toast.error(alertText);
-			}
+			const { status, text } = $message;
+			if (status === 'error') toast.error(text);
+			if (status === 'success') toast.success(text);
 		}
 	});
 
-	const { form: formData, enhance: verifyCodeEnhance, errors, message, delayed } = form;
+	const { form: formData, message, delayed } = form;
+
+	// resend code button callback
+	const resendFunction: SubmitFunction = () => {
+		return async ({ result }) => {
+			if (result.type === 'failure') {
+				toast.error(result.data?.message);
+			}
+
+			if (result.type === 'success') {
+				toast.success(result.data?.message);
+			}
+		};
+	};
 
 	const isDesktop = mediaQuery('(min-width: 640px)');
+
 	$: showFormContainer = $isDesktop && showContainer;
 </script>
 
@@ -56,13 +71,13 @@
 		class="flex flex-col gap-y-2"
 		method="POST"
 		action="/email-verification?/verifyCode"
-		use:verifyCodeEnhance
+		autocomplete="off"
+		use:enhance
 	>
 		<Form.Field {form} name="verificationCode">
 			<Form.Control let:attrs>
 				<Input {...attrs} bind:value={$formData.verificationCode} />
 			</Form.Control>
-			<Form.FieldErrors>{$errors.verificationCode}</Form.FieldErrors>
 		</Form.Field>
 		<Form.Button disabled={$delayed}>Verify email</Form.Button>
 	</form>
@@ -72,7 +87,7 @@
 		class="flex flex-col gap-y-2"
 		method="POST"
 		action="/email-verification?/sendNewCode"
-		use:enhance
+		use:enhance={resendFunction}
 	>
 		<Form.Button variant="ghost">Resend Code</Form.Button>
 	</form>
