@@ -127,6 +127,9 @@ devDependencies:
   svelte-radix:
     specifier: ^1.1.0
     version: 1.1.0(svelte@4.2.12)
+  sveltekit-rate-limiter:
+    specifier: ^0.5.1
+    version: 0.5.1(@sveltejs/kit@2.5.4)
   tailwindcss:
     specifier: ^3.3.6
     version: 3.4.1
@@ -914,6 +917,11 @@ packages:
       strip-ansi-cjs: /strip-ansi@6.0.1
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: /wrap-ansi@7.0.0
+
+  /@isaacs/ttlcache@1.4.1:
+    resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
+    engines: {node: '>=12'}
+    dev: true
 
   /@jest/schemas@29.6.3:
     resolution: {integrity: sha512-mo5j5X+jIZmJQveBKeS/clAueipV7KgiX1vMgCxam1RNYiqE1w62n0/tJJnHtjW8ZHcQco5gY85jA3mi0L+nSA==}
@@ -4866,6 +4874,15 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.8
       periscopic: 3.1.0
+
+  /sveltekit-rate-limiter@0.5.1(@sveltejs/kit@2.5.4):
+    resolution: {integrity: sha512-Q2C7mT9PdoL6v3VXgxngyXiEg2i3Dp0iVjVvKi722lroTM7oHxAJsmj66607BiSw8mdQk1Me6nhE6uRXrkDVIg==}
+    peerDependencies:
+      '@sveltejs/kit': 1.x || 2.x
+    dependencies:
+      '@isaacs/ttlcache': 1.4.1
+      '@sveltejs/kit': 2.5.4(@sveltejs/vite-plugin-svelte@3.0.2)(svelte@4.2.12)(vite@5.2.0)
+    dev: true
 
   /sveltekit-superforms@2.10.5(@sveltejs/kit@2.5.4)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.20.2)(svelte@4.2.12):
     resolution: {integrity: sha512-V4gDMIdudxCNyg1hwgAIdzK0Z5y+wwgpQhaaAX4ZB06DbxMWDQFA4PnLvbvJNxQzkFD6k8sSbAJvvQZQy9IhIw==}

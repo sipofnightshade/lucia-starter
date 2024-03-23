@@ -13,6 +13,21 @@ export const checkIfEmailExists = async (email: string) => {
 	return queryResult.length > 0;
 };
 
+export const checkIfUserExists = async (email: string) => {
+	const [existingUser] = await db
+		.select({
+			id: userTable.id,
+			email: userTable.email,
+			password: userTable.password,
+			isEmailVerified: userTable.isEmailVerified,
+			authMethods: userTable.authMethods
+		})
+		.from(userTable)
+		.where(eq(userTable.email, email));
+
+	return existingUser;
+};
+
 export const createUser = async (user: UserInsertSchema) => {
 	return await db.insert(userTable).values(user);
 };
