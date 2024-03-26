@@ -3,10 +3,10 @@
 Offers similar component to what Clerk offers for authentication in a minimalistic starter.
 
 ## Features
---> Email - Password auth with verification codes
---> Google Oauth
---> Github Oauth
---> Global auth modals
+- Email - Password auth with verification codes
+- Google Oauth
+- Github Oauth
+- Global auth modals
 
 ## Setup
 
