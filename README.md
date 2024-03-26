@@ -2,6 +2,12 @@
 
 Offers similar component to what Clerk offers for authentication in a minimalistic starter.
 
+## Features
+--> Email - Password auth with verification codes
+--> Google Oauth
+--> Github Oauth
+--> Global auth modals
+
 ## Setup
 
 To setup the project you need to first create a local **Libsql** database and run the drizzle scripts to set up the database and then start the dev server.
