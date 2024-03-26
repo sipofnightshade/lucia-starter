@@ -13,8 +13,17 @@ import { checkIfUserExists } from '$lib/server/dbUtils';
 
 // If signed in user visits Login page, redirect them to home
 export const load: PageServerLoad = async (event) => {
-	if (event.locals.user) redirect(302, '/');
+	const user = event.locals.user;
 
+	// if user is already logged in & verified, redirect them to home
+	if (user && user.isEmailVerified) {
+		redirect(302, '/');
+	}
+
+	// if user is already logged in & not verified, redirect them to email verification
+	if (user && !user.isEmailVerified) {
+		redirect(302, '/email-verification');
+	}
 	return {
 		form: await superValidate(zod(loginSchema))
 	};

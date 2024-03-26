@@ -5,7 +5,7 @@ export const actions: Actions = {
 	default: async (event) => {
 		// 1. Check if user is authenticated (session exists in locals)
 		if (!event.locals.session) {
-			redirect(302, '/');
+			redirect(302, '/login');
 		}
 
 		// 2. Invalidate the user's session using Lucia library
