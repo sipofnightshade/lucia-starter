@@ -11,7 +11,7 @@ import { alphabet, generateRandomString } from 'oslo/crypto';
 import { EMAIL_VERIFICATION_CODE_LENGTH } from '$lib/validation/authSchema';
 import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
 // resend
-import { RESEND_API_KEY } from '$env/static/private';
+import { EMAIL_FROM, RESEND_API_KEY } from '$env/static/private';
 import { Resend } from 'resend';
 
 const resend = new Resend(RESEND_API_KEY);
@@ -65,7 +65,7 @@ export const generateVerificationCode = async (userId: string, email: string) =>
 
 export const sendVerificationCode = async (email: string, code: string) => {
 	const { error } = await resend.emails.send({
-		from: 'Lucia starter <onboarding@resend.dev>',
+		from: `Lucia starter <${EMAIL_FROM}>`,
 		to: [email],
 		subject: 'Email Verification Code',
 		html: `<p>Your email verification code is: <strong>${code}</strong></p>`
