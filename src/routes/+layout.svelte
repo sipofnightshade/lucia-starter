@@ -6,7 +6,7 @@
 </script>
 
 <ModeWatcher />
-<Toaster richColors />
+<Toaster richColors duration={4000} />
 <slot />
 
 <!-- Show tailwind breakpoints -->
