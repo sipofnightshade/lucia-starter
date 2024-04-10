@@ -1,15 +1,19 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import AuthBadge from '$lib/components/Forms/AuthBadge.svelte';
-	import FormHeader from '$lib/components/Forms/FormHeader.svelte';
-	import { Input } from '$lib/components/ui/input';
-	import { loginSchema, type LoginSchema } from '$lib/validation/authSchema';
+	// Third-Party Library Imports
+	import { mediaQuery } from 'svelte-legos';
+	import { toast } from 'svelte-sonner';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	// Components
+	import * as Form from '$lib/components/ui/form';
+	import { Input } from '$lib/components/ui/input';
+	import AuthBadge from '$lib/components/Forms/AuthBadge.svelte';
+	import FormHeader from '$lib/components/Forms/FormHeader.svelte';
 	import Divider from '$lib/components/Forms/Divider.svelte';
-
-	import { mediaQuery } from 'svelte-legos';
 	import OAuthButtons from '$lib/components/Forms/OAuthButtons.svelte';
+	import Spinner from '$lib/Icons/Spinner.svelte';
+	// Validation
+	import { loginSchema, type LoginSchema } from '$lib/validation/authSchema';
 
 	export let data: SuperValidated<Infer<LoginSchema>>;
 	export let showBadge: boolean = false;
@@ -17,9 +21,17 @@
 
 	// form handling
 	const form = superForm(data, {
-		validators: zodClient(loginSchema)
+		validators: zodClient(loginSchema),
+		delayMs: 500,
+		timeoutMs: 8000,
+		onUpdated: () => {
+			if (!$message) return;
+			const { status, text } = $message;
+			if (status === 'error') toast.error(text);
+			if (status === 'success') toast.success(text);
+		}
 	});
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, delayed, timeout, message } = form;
 
 	const isDesktop = mediaQuery('(min-width: 640px)');
 	$: showFormContainer = $isDesktop && showContainer;
@@ -55,7 +67,13 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<Form.Button>Submit</Form.Button>
+
+		<Form.Button>
+			{#if $delayed || $timeout}
+				<Spinner class="mr-1 h-5 w-5" />
+			{/if}
+			<span>Login</span>
+		</Form.Button>
 	</form>
 
 	<div class="mt-4 flex gap-x-1 text-sm">
