@@ -18,7 +18,11 @@ import {
 import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async (event) => {
-	if (!event.locals.user) redirect(302, '/signup');
+	const { user } = event.locals;
+	// redirect to signup if not signed in
+	if (!user) redirect(302, '/signup');
+	// redirect home if logged in and email already verified
+	if (user.isEmailVerified) redirect(302, '/');
 
 	return {
 		form: await superValidate(zod(emailVerificationCodeSchema))

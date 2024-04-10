@@ -19,16 +19,6 @@
 			<Button href="/signup" variant="outline">Signup</Button>
 			<Button href="/login" variant="outline">Login</Button>
 		</div>
-
-		<div>
-			<h2 class="font-semibold">Modal Buttons</h2>
-			<Button>
-				<LoginModal data={loginForm} />
-			</Button>
-			<Button>
-				<SignupModal data={signupForm} />
-			</Button>
-		</div>
 	{/if}
 
 	{#if user}
@@ -44,6 +34,16 @@
 			<Button href="/email-verification" variant="outline">Verify Email</Button>
 		</div>
 	{/if}
+
+	<div>
+		<h2 class="font-semibold">Modal Buttons</h2>
+		<Button>
+			<LoginModal data={loginForm} />
+		</Button>
+		<Button>
+			<SignupModal data={signupForm} />
+		</Button>
+	</div>
 
 	<div>
 		<h2 class="font-semibold">Mode Toggle</h2>
