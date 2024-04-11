@@ -10,20 +10,13 @@ import { loginSchema } from '$lib/validation/authSchema';
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { checkIfUserExists } from '$lib/server/db_utils/user';
+import { createSession } from '$lib/server/auth_utils/sessions';
 
-// If signed in user visits Login page, redirect them to home
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user;
+	if (user && user.isEmailVerified) redirect(302, '/');
+	if (user && !user.isEmailVerified) redirect(302, '/email-verification');
 
-	// if user is already logged in & verified, redirect them to home
-	if (user && user.isEmailVerified) {
-		redirect(302, '/');
-	}
-
-	// if user is already logged in & not verified, redirect them to email verification
-	if (user && !user.isEmailVerified) {
-		redirect(302, '/email-verification');
-	}
 	return {
 		form: await superValidate(zod(loginSchema))
 	};
@@ -31,10 +24,7 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
-		// Get form data and validate it
 		const form = await superValidate(event, zod(loginSchema));
-
-		// If form data is invalid, return error message
 		if (!form.valid) {
 			return message(form, {
 				status: 'error',
@@ -42,10 +32,7 @@ export const actions: Actions = {
 			});
 		}
 
-		// Check for existing user with email
 		const existingUser = await checkIfUserExists(form.data.email);
-
-		// Handle non-existent email to avoid revealing valid emails
 		if (!existingUser) {
 			return setError(
 				form,
@@ -56,11 +43,9 @@ export const actions: Actions = {
 
 		let isPasswordValid = false;
 
-		// Verify password if user uses email authentication and has a password
 		if (existingUser.authMethods.includes('email') && existingUser.password) {
 			isPasswordValid = await new Argon2id().verify(existingUser.password, form.data.password);
 		} else {
-			// If the user doesn't have a password, they registered with OAuth
 			return message(
 				form,
 				{
@@ -75,7 +60,6 @@ export const actions: Actions = {
 			);
 		}
 
-		// If password is not valid, return error message
 		if (!isPasswordValid) {
 			return setError(
 				form,
@@ -85,12 +69,7 @@ export const actions: Actions = {
 		}
 
 		// Create Lucia session and set session cookie for authenticated user
-		const session = await lucia.createSession(existingUser.id, {});
-		const sessionCookie = lucia.createSessionCookie(session.id);
-		event.cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes
-		});
+		await createSession(lucia, existingUser.id, event.cookies);
 
 		// Redirect user to protected route
 		redirect(302, '/');

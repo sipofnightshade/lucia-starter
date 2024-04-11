@@ -3,8 +3,8 @@ import type { RequestHandler } from './$types';
 
 import { generateState } from 'arctic';
 
-import { GITHUB_OAUTH_STATE_COOKIE_NAME } from '$lib/server/luciaAuthUtils';
 import { githubOauth } from '$lib/server/luciaAuth';
+import { GITHUB_OAUTH_STATE_COOKIE_NAME } from '$lib/server/auth_utils/cookies';
 
 export const GET: RequestHandler = async ({ cookies }) => {
 	// Generate a unique state value for the OAuth  process

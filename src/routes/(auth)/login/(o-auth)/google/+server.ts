@@ -3,11 +3,11 @@ import type { RequestHandler } from './$types';
 
 import { generateCodeVerifier, generateState } from 'arctic';
 
-import {
-	GOOGLE_OAUTH_CODE_VERIFIER_COOKIE_NAME,
-	GOOGLE_OAUTH_STATE_COOKIE_NAME
-} from '$lib/server/luciaAuthUtils';
 import { googleOauth } from '$lib/server/luciaAuth';
+import {
+	GOOGLE_OAUTH_STATE_COOKIE_NAME,
+	GOOGLE_OAUTH_CODE_VERIFIER_COOKIE_NAME
+} from '$lib/server/auth_utils/cookies';
 
 export const GET: RequestHandler = async ({ cookies }) => {
 	// Generate a unique state value for the OAuth  process

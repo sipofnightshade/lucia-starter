@@ -4,10 +4,11 @@ import { OAuth2RequestError } from 'arctic';
 import { and, eq } from 'drizzle-orm';
 import { generateId } from 'lucia';
 
-import { GITHUB_OAUTH_STATE_COOKIE_NAME, createSession } from '$lib/server/luciaAuthUtils';
 import { db } from '$lib/server/db';
 import { githubOauth, lucia } from '$lib/server/luciaAuth';
 import { oauthAccountsTable, userTable } from '$lib/server/schema';
+import { GITHUB_OAUTH_STATE_COOKIE_NAME } from '$lib/server/auth_utils/cookies';
+import { createSession } from '$lib/server/auth_utils/sessions';
 
 type GitHubUser = {
 	id: number;

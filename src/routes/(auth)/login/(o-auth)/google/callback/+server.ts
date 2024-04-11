@@ -3,14 +3,14 @@ import { OAuth2RequestError } from 'arctic';
 import { and, eq } from 'drizzle-orm';
 import { generateId } from 'lucia';
 
-import {
-	GOOGLE_OAUTH_CODE_VERIFIER_COOKIE_NAME,
-	GOOGLE_OAUTH_STATE_COOKIE_NAME,
-	createSession
-} from '$lib/server/luciaAuthUtils';
 import { db } from '$lib/server/db';
 import { googleOauth, lucia } from '$lib/server/luciaAuth';
 import { oauthAccountsTable, userTable } from '$lib/server/schema';
+import {
+	GOOGLE_OAUTH_STATE_COOKIE_NAME,
+	GOOGLE_OAUTH_CODE_VERIFIER_COOKIE_NAME
+} from '$lib/server/auth_utils/cookies';
+import { createSession } from '$lib/server/auth_utils/sessions';
 
 // Define the structure of a Google user
 type GoogleUser = {

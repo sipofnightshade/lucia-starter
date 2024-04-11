@@ -8,14 +8,13 @@ import type { Actions, PageServerLoad } from './$types';
 import { emailVerificationCodeSchema } from '$lib/validation/authSchema';
 import { db } from '$lib/server/db';
 import { userTable } from '$lib/server/schema';
-import {
-	generateVerificationCode,
-	sendCodeRateLimiter,
-	sendVerificationCode,
-	verifyCodeRateLimiter,
-	verifyVerificationCode
-} from '$lib/server/luciaAuthUtils';
 import { eq } from 'drizzle-orm';
+import {
+	verifyVerificationCode,
+	generateVerificationCode,
+	sendVerificationCode
+} from '$lib/server/auth_utils/emailVerificationCodes';
+import { verifyCodeRateLimiter, sendCodeRateLimiter } from '$lib/server/auth_utils/rateLimit';
 
 export const load: PageServerLoad = async (event) => {
 	const { user } = event.locals;

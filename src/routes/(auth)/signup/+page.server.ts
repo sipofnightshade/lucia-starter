@@ -11,22 +11,21 @@ import type { Actions, PageServerLoad } from './$types';
 // database
 import { signupSchema } from '$lib/validation/authSchema';
 import { checkIfUserExists, createUser } from '$lib/server/db_utils/user';
-import { generateVerificationCode, sendVerificationCode } from '$lib/server/luciaAuthUtils';
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { userTable } from '$lib/server/schema';
+import {
+	generateVerificationCode,
+	sendVerificationCode
+} from '$lib/server/auth_utils/emailVerificationCodes';
+import { createSession } from '$lib/server/auth_utils/sessions';
 
 // If signed in user visits Signup page, redirect them to home
 export const load: PageServerLoad = async (event) => {
 	const user = event.locals.user;
 
-	if (user && !user.isEmailVerified) {
-		redirect(302, '/email-verification');
-	}
-
-	if (user && user.isEmailVerified) {
-		redirect(302, '/');
-	}
+	if (user && !user.isEmailVerified) redirect(302, '/email-verification');
+	if (user && user.isEmailVerified) redirect(302, '/');
 
 	return {
 		form: await superValidate(zod(signupSchema))
@@ -35,10 +34,8 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
-		// Get form data and validate it
 		const form = await superValidate(request, zod(signupSchema));
 
-		// If form data is invalid, return error message
 		if (!form.valid) {
 			return message(form, {
 				status: 'error',
@@ -47,12 +44,8 @@ export const actions: Actions = {
 		}
 
 		try {
-			// Extract user email from form data
 			const userEmail = form.data.email;
-			// Check if user already exists
 			const existingUser = await checkIfUserExists(userEmail);
-
-			// If user exists and uses email auth, return error
 			if (existingUser && existingUser.authMethods.includes('email')) {
 				return message(form, {
 					status: 'error',
@@ -60,10 +53,8 @@ export const actions: Actions = {
 				});
 			}
 
-			// Generate or retrieve user ID
 			const userId = existingUser?.id ?? generateId(15);
 
-			// Hash the user's password
 			const hashedPassword = await new Argon2id().hash(form.data.password);
 
 			// Create or update user based on existence
@@ -85,14 +76,9 @@ export const actions: Actions = {
 					.where(eq(userTable.email, userEmail));
 			}
 
-			// Generate email verification code
-			const emailVerificationCode = await generateVerificationCode(userId, userEmail);
-
-			// Send verification code to user's email
-			const sendVerificationCodeResult = await sendVerificationCode(
-				userEmail,
-				emailVerificationCode
-			);
+			// Generate email verification code & send to user's email
+			const verificationCode = await generateVerificationCode(userId, userEmail);
+			const sendVerificationCodeResult = await sendVerificationCode(userEmail, verificationCode);
 
 			// If sending verification code fails, return error
 			if (!sendVerificationCodeResult.result) {
@@ -110,8 +96,11 @@ export const actions: Actions = {
 				...sessionCookie.attributes
 			});
 
+			await createSession(lucia, userId, cookies);
+
 			// Redirect user to home page after successful signup
-			// Note: Redirect is handled in the load function
+			// Note: Redirect is also handled in the load function
+			redirect(302, '/');
 		} catch (error) {
 			// Return error message if an error occurs during processing
 			return message(form, {
