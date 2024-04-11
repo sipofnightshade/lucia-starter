@@ -10,7 +10,7 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 // database
 import { signupSchema } from '$lib/validation/authSchema';
-import { checkIfUserExists, createUser } from '$lib/server/dbUtils';
+import { checkIfUserExists, createUser } from '$lib/server/db_utils/user';
 import { generateVerificationCode, sendVerificationCode } from '$lib/server/luciaAuthUtils';
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';

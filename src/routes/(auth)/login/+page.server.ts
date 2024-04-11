@@ -9,7 +9,7 @@ import { loginSchema } from '$lib/validation/authSchema';
 // superforms
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { checkIfUserExists } from '$lib/server/dbUtils';
+import { checkIfUserExists } from '$lib/server/db_utils/user';
 
 // If signed in user visits Login page, redirect them to home
 export const load: PageServerLoad = async (event) => {
