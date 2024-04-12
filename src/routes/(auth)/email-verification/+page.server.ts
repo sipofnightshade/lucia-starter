@@ -2,7 +2,7 @@
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 // sveltekit
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 // database
 import { emailVerificationCodeSchema } from '$lib/validation/authSchema';
@@ -23,6 +23,8 @@ export const load: PageServerLoad = async (event) => {
 	// redirect home if logged in and email already verified
 	if (user.isEmailVerified) redirect(302, '/');
 
+	await verifyCodeRateLimiter.cookieLimiter?.preflight(event);
+
 	return {
 		form: await superValidate(zod(emailVerificationCodeSchema))
 	};
@@ -31,7 +33,7 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	verifyCode: async (event) => {
 		const user = event.locals.user;
-		if (!user) redirect(302, '/signup');
+		if (!user) error(401, 'Unauthorized');
 
 		const form = await superValidate(event, zod(emailVerificationCodeSchema));
 		if (!form.valid) {
@@ -41,13 +43,13 @@ export const actions: Actions = {
 			});
 		}
 
-		const rateLimitStatus = await verifyCodeRateLimiter.check(event);
-		if (rateLimitStatus.limited) {
+		const rateLimitStatus = await verifyCodeRateLimiter.isLimited(event);
+		if (rateLimitStatus) {
 			return message(
 				form,
 				{
 					status: 'error',
-					text: `You have made too many requests and exceeded the rate limit. Please try again after ${rateLimitStatus.retryAfter} seconds.`
+					text: 'Too many verification attempts. Please try again later.'
 				},
 				{ status: 429 }
 			);
@@ -81,15 +83,15 @@ export const actions: Actions = {
 	},
 
 	sendNewCode: async (event) => {
-		const rateLimitStatus = await sendCodeRateLimiter.check(event);
-		if (rateLimitStatus.limited) {
+		const rateLimitStatus = await sendCodeRateLimiter.isLimited(event);
+		if (rateLimitStatus) {
 			return fail(429, {
-				message: `You have made too many requests and exceeded the rate limit. Please try again after ${rateLimitStatus.retryAfter} seconds.`
+				message: `You have made too many code requests! Please try again after.`
 			});
 		}
 
 		const user = event.locals.user;
-		if (!user) return redirect(302, '/signup');
+		if (!user) error(401, 'Unauthorized');
 
 		const generatedCode = await generateVerificationCode(user.id, user.email);
 		const sendCodeResult = await sendVerificationCode(user.email, generatedCode);

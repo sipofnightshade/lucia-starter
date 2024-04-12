@@ -1,7 +1,7 @@
-import { RetryAfterRateLimiter } from 'sveltekit-rate-limiter/server';
+import { RateLimiter } from 'sveltekit-rate-limiter/server';
 
 function createRateLimiter(cookieName: string, cookieSecret: string) {
-	return new RetryAfterRateLimiter({
+	return new RateLimiter({
 		IP: [10, 'h'], // IP address limiter, allowing up to  10 requests per hour
 		IPUA: [5, 'm'], // IP + User Agent limiter, allowing up to  5 requests per minute
 		cookie: {
