@@ -1,7 +1,7 @@
 <script lang="ts">
 	import LoginModal from '$lib/components/Forms/LoginModal.svelte';
 	import SignupModal from '$lib/components/Forms/SignupModal.svelte';
-	import UserButton from '$lib/components/User/UserButton.svelte';
+	import UserButton from '$lib/components/Forms/UserButton.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import ModeToggle from '$lib/components/ModeToggle/ModeToggle.svelte';
 

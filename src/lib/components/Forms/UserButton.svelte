@@ -1,13 +1,13 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import UserIcon from './UserIcon.svelte';
 	import Exit from 'svelte-radix/Exit.svelte';
 	import { enhance } from '$app/forms';
 	import type { User } from 'lucia';
+	import { getInitials } from '$lib/utils/getInitials';
 
 	export let user: User;
-
+	$: initials = getInitials(user.name);
 </script>
 
 <!-- @component
@@ -21,7 +21,7 @@ the logged out state.
 		<Avatar.Root class="border-2">
 			<Avatar.Image src={user.avatarUrl} alt="profile" />
 			<Avatar.Fallback>
-				<UserIcon />
+				<span class="font-bold tracking-wide">{initials}</span>
 			</Avatar.Fallback>
 		</Avatar.Root>
 	</DropdownMenu.Trigger>
