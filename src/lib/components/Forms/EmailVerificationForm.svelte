@@ -2,6 +2,7 @@
 	// components
 	import * as Form from '$lib/components/ui/form';
 	import { toast } from 'svelte-sonner';
+	import Spinner from '$lib/Icons/Spinner.svelte';
 	import { Input } from '$lib/components/ui/input';
 	//sveltekit
 	import type { SubmitFunction } from '@sveltejs/kit';
@@ -23,6 +24,8 @@
 	const form = superForm(data, {
 		validators: zodClient(emailVerificationCodeSchema),
 		resetForm: false,
+		delayMs: 500,
+		timeoutMs: 8000,
 		taintedMessage: null,
 		onUpdated: () => {
 			if (!$message) return;
@@ -32,7 +35,7 @@
 		}
 	});
 
-	const { form: formData, message, delayed } = form;
+	const { form: formData, message, delayed, timeout } = form;
 
 	// resend code button callback
 	const resendFunction: SubmitFunction = () => {
@@ -63,7 +66,13 @@
 			<Input {...attrs} bind:value={$formData.verificationCode} />
 		</Form.Control>
 	</Form.Field>
-	<Form.Button disabled={$delayed}>Verify email</Form.Button>
+	<Form.Button disabled={$delayed || $timeout}>
+		{#if $delayed || $timeout}
+			<Spinner class="mr-1 h-5 w-5" />
+		{:else}
+			<span>Verify email</span>
+		{/if}
+	</Form.Button>
 </form>
 
 <!-- resend code -->

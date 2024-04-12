@@ -46,10 +46,11 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button>
+	<Form.Button disabled={$delayed || $timeout}>
 		{#if $delayed || $timeout}
 			<Spinner class="mr-1 h-5 w-5" />
+		{:else}
+			<span>Login</span>
 		{/if}
-		<span>Login</span>
 	</Form.Button>
 </form>
