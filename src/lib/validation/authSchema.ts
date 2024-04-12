@@ -35,6 +35,15 @@ export const emailVerificationCodeSchema = z.object({
 	verificationCode: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH)
 });
 
+export const editAccountSchema = z.object({
+	name: z
+		.string()
+		.min(MIN_NAME_LENGTH, NAME_MIN_ERROR_MESSAGE)
+		.max(MAX_NAME_LENGTH, NAME_MAX_ERROR_MESSAGE),
+	email: z.string().email('Invalid email format').trim()
+});
+
 export type SignupSchema = typeof signupSchema;
 export type LoginSchema = typeof loginSchema;
 export type EmailVerificationCodeSchema = typeof emailVerificationCodeSchema;
+export type EditAccountSchema = typeof editAccountSchema;
