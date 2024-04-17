@@ -24,6 +24,7 @@
 	{#if user}
 		<div class="flex w-fit flex-col gap-y-2">
 			<h2 class="font-semibold">User Button</h2>
+			<Button href="/account" variant="outline">Account</Button>
 			<UserButton {user} />
 		</div>
 	{/if}
@@ -37,12 +38,8 @@
 
 	<div>
 		<h2 class="font-semibold">Modal Buttons</h2>
-		<Button>
-			<LoginModal data={loginForm} />
-		</Button>
-		<Button>
-			<SignupModal data={signupForm} />
-		</Button>
+		<LoginModal data={loginForm} />
+		<SignupModal data={signupForm} />
 	</div>
 
 	<div>

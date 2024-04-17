@@ -5,6 +5,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import OAuthButtons from '$lib/components/Forms/OAuthButtons.svelte';
 	import Divider from '$lib/components/Forms/Divider.svelte';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	// Validations
 	import { type LoginSchema } from '$lib/validation/authSchema';
 	import { type SuperValidated, type Infer } from 'sveltekit-superforms';
@@ -14,7 +15,7 @@
 </script>
 
 <Dialog.Root>
-	<Dialog.Trigger>Login</Dialog.Trigger>
+	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Login</Dialog.Trigger>
 	<Dialog.Content
 		class="flex w-full max-w-96 flex-col gap-y-4 !rounded-2xl bg-background p-8 sm:w-96"
 	>

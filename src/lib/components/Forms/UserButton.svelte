@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import Exit from 'svelte-radix/Exit.svelte';
+	import LogOut from 'lucide-svelte/icons/log-out';
 	import { enhance } from '$app/forms';
 	import type { User } from 'lucia';
 	import { getInitials } from '$lib/utils/getInitials';
@@ -37,7 +37,7 @@ the logged out state.
 					type="submit"
 					class="relative flex w-full select-none items-center gap-x-4 rounded-sm px-2 py-3 text-base text-muted-foreground outline-none transition-colors hover:bg-muted data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50"
 				>
-					<Exit size={20} />
+					<LogOut size={20} />
 					<span>Sign out</span>
 				</button>
 			</form>

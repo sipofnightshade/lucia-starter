@@ -7,12 +7,14 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import FormHeader from '$lib/components/Forms/FormHeader.svelte';
 	import LuciaFormContainer from '$lib/components/Forms/LuciaFormContainer.svelte';
-	import { Button } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import type { PageData } from './$types';
 	import { getInitials } from '$lib/utils/getInitials';
 	import { editAccountSchema } from '$lib/validation/authSchema';
 	import { Google, Github } from '$lib/Icons';
 	import LinkedOAuthButton from '$lib/components/Forms/LinkedOAuthButton.svelte';
+	import { enhance } from '$app/forms';
+	import LogOut from 'lucide-svelte/icons/log-out';
 
 	export let data: PageData;
 	const { name, email, avatarUrl, authMethods } = data.user;
@@ -42,22 +44,14 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col gap-y-2">
-			<!-- name -->
-			<div class="flex flex-col gap-y-0.5">
-				<p
-					class="flex h-10 w-full items-center rounded-md border bg-muted px-2.5 text-muted-foreground"
-				>
-					{name}
-				</p>
+		<div class="flex flex-col gap-y-2 text-sm">
+			<div class="flex items-center">
+				<span class="w-12 font-bold">Name</span>
+				<p class="leading-none text-muted-foreground">{name}</p>
 			</div>
-			<!-- email -->
-			<div class="flex flex-col gap-y-0.5">
-				<p
-					class="flex h-10 w-full items-center rounded-md border bg-muted px-2.5 text-muted-foreground"
-				>
-					{email}
-				</p>
+			<div class="flex items-center">
+				<span class="w-12 font-bold">Email</span>
+				<p class="leading-none text-muted-foreground">{email}</p>
 			</div>
 		</div>
 		<!-- Account Linking -->
@@ -76,6 +70,12 @@
 				</LinkedOAuthButton>
 			</div>
 		</div>
-		<!-- Delete Account -->
+		<!-- Sign Out -->
+		<form method="post" action="/signout" use:enhance>
+			<button type="submit" class={buttonVariants({ variant: 'outline' })}>
+				<LogOut size={20} strokeWidth="1.8" class="mr-2" />
+				<span>Sign out</span>
+			</button>
+		</form>
 	</LuciaFormContainer>
 </div>

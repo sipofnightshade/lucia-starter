@@ -5,6 +5,8 @@
 	import SignupForm from '$lib/components/Forms/SignupForm.svelte';
 	import OAuthButtons from '$lib/components/Forms/OAuthButtons.svelte';
 	import Divider from '$lib/components/Forms/Divider.svelte';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
+
 	// Validation
 	import { type SignupSchema } from '$lib/validation/authSchema';
 	import { type SuperValidated, type Infer } from 'sveltekit-superforms';
@@ -13,7 +15,7 @@
 </script>
 
 <Dialog.Root>
-	<Dialog.Trigger>Signup</Dialog.Trigger>
+	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Signup</Dialog.Trigger>
 	<Dialog.Content
 		class="flex w-full max-w-96 flex-col gap-y-4 !rounded-2xl bg-background p-8 sm:w-96"
 	>
