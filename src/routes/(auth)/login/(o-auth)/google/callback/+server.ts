@@ -85,9 +85,9 @@ export const GET: RequestHandler = async (event) => {
 				);
 
 			if (!existingOauthAccount) {
-				// Add the 'google' auth provider to the user's authMethods list
-				const authMethods = existingUser.authMethods || [];
-				authMethods.push('google');
+				// Add the 'google' auth provider to the user's authMethods set
+				const authMethods = new Set(existingUser.authMethods);
+				authMethods.add('google');
 
 				// Transaction: Link Google OAuth account to the existing user and update authMethods
 				await db.transaction(async (trx) => {
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async (event) => {
 					await trx
 						.update(userTable)
 						.set({
-							authMethods
+							authMethods: Array.from(authMethods)
 						})
 						.where(eq(userTable.id, existingUser.id));
 				});

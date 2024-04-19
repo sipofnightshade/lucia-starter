@@ -78,7 +78,7 @@ export const GET: RequestHandler = async (event) => {
 			.where(eq(userTable.email, primaryEmail.email));
 
 		if (existingUser) {
-			// ✅ Existing user - Link account if not already linked
+			// Existing user - Link account if not already linked
 			const [existingOauthAccount] = await db
 				.select()
 				.from(oauthAccountsTable)
@@ -90,9 +90,9 @@ export const GET: RequestHandler = async (event) => {
 				);
 
 			if (!existingOauthAccount) {
-				// Add the 'github' auth provider to the user's authMethods list
-				const authMethods = existingUser.authMethods || [];
-				authMethods.push('github');
+				// Add the 'github' auth provider to the user's authMethods set
+				const authMethods = new Set(existingUser.authMethods);
+				authMethods.add('github');
 
 				await db.transaction(async (trx) => {
 					// Link the GitHub OAuth account to the existing user
@@ -102,11 +102,11 @@ export const GET: RequestHandler = async (event) => {
 						providerUserId: githubUser.id.toString()
 					});
 
-					// Update the user's authMethods list
+					// Update the user's authMethods set
 					await trx
 						.update(userTable)
 						.set({
-							authMethods
+							authMethods: Array.from(authMethods)
 						})
 						.where(eq(userTable.id, existingUser.id));
 				});
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async (event) => {
 			// Create a session for the existing user
 			await createSession(lucia, existingUser.id, event.cookies);
 		} else {
-			// ✅ New user - Create user and link GitHub account
+			// New user - Create user and link GitHub account
 			const userId = generateId(15);
 
 			await db.transaction(async (trx) => {
