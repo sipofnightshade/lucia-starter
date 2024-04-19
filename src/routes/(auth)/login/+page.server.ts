@@ -9,7 +9,7 @@ import { loginSchema } from '$lib/validation/authSchema';
 // superforms
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { checkIfUserExists } from '$lib/server/db_utils/user';
+import { getExistingUser } from '$lib/server/db_utils/user';
 import { createSession } from '$lib/server/auth_utils/sessions';
 
 export const load: PageServerLoad = async (event) => {
@@ -32,7 +32,7 @@ export const actions: Actions = {
 			});
 		}
 
-		const existingUser = await checkIfUserExists(form.data.email);
+		const existingUser = await getExistingUser(form.data.email);
 		if (!existingUser) {
 			return setError(
 				form,

@@ -11,9 +11,7 @@ import type { Actions, PageServerLoad } from './$types';
 // database
 import { signupSchema } from '$lib/validation/authSchema';
 import { checkIfUserExists, createUser } from '$lib/server/db_utils/user';
-import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { userTable } from '$lib/server/schema';
+
 import {
 	generateVerificationCode,
 	sendVerificationCode
@@ -46,35 +44,27 @@ export const actions: Actions = {
 		try {
 			const userEmail = form.data.email;
 			const existingUser = await checkIfUserExists(userEmail);
-			if (existingUser && existingUser.authMethods.includes('email')) {
+
+			if (existingUser) {
+				// If the user already exists, return an error message
 				return message(form, {
 					status: 'error',
-					text: 'This email is already in use. Please use a different email address.'
+					text: 'This email is already in use. Please use a different email address or log in.'
 				});
 			}
 
-			const userId = existingUser?.id ?? generateId(15);
-
+			// If the user doesn't exist, create a new user
+			const userId = generateId(15);
 			const hashedPassword = await new Argon2id().hash(form.data.password);
 
-			// Create or update user based on existence
-			if (!existingUser) {
-				await createUser({
-					id: userId,
-					name: form.data.name,
-					email: userEmail,
-					isEmailVerified: false,
-					password: hashedPassword,
-					authMethods: ['email']
-				});
-			} else {
-				await db
-					.update(userTable)
-					.set({
-						password: hashedPassword
-					})
-					.where(eq(userTable.email, userEmail));
-			}
+			await createUser({
+				id: userId,
+				name: form.data.name,
+				email: userEmail,
+				isEmailVerified: false,
+				password: hashedPassword,
+				authMethods: ['email']
+			});
 
 			// Generate email verification code & send to user's email
 			const verificationCode = await generateVerificationCode(userId, userEmail);
