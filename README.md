@@ -3,7 +3,7 @@
 Minimal starter project with just the basic authentication pages and components that you can build on.
 ![image](https://i.imgur.com/bNajOlU.png)
 
-🌟 ## Features
+## 🌟Features
 
 - Email - Password auth with verification codes + rate limiting
 - Google & Github Oauth
@@ -12,7 +12,7 @@ Minimal starter project with just the basic authentication pages and components 
 - Shadcn-svelte + Superforms
 - Turso DB + Drizzle ORM (swap with your preferred db, just follow drizzle docs)
 
-⚙ ## Setup
+## ⚙ Setup
 
 To setup the project you need to first create a local **Libsql** database and run the drizzle scripts to set up the database and then start the dev server.
 
@@ -33,7 +33,7 @@ pnpm db:push
 pnpm dev
 ```
 
-🛠 ## Building
+## 🛠 Building
 
 To create a production version of your app:
 
