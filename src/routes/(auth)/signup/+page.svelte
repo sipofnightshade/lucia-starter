@@ -10,7 +10,7 @@
 </script>
 
 <div class="flex h-svh w-screen items-center justify-center bg-background">
-	<LuciaFormContainer showBadge>
+	<LuciaFormContainer>
 		<FormHeader
 			title="Create your account"
 			description="Join with your preferred social account!"
