@@ -14,6 +14,7 @@ export default {
 	schema: 'src/lib/server/schema.ts',
 	out: './migrations',
 	driver: 'turso',
+	dialect: 'sqlite',
 	dbCredentials: {
 		url: DB_URL,
 		authToken: DB_AUTH_TOKEN
