@@ -14,8 +14,6 @@
 		type EmailVerificationCodeSchema
 	} from '$lib/validation/authSchema';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	// other
-	import { mediaQuery } from 'svelte-legos';
 
 	// props
 	export let data: SuperValidated<Infer<EmailVerificationCodeSchema>>;
@@ -49,8 +47,6 @@
 			}
 		};
 	};
-
-	const isDesktop = mediaQuery('(min-width: 640px)');
 </script>
 
 <!-- verify email -->
