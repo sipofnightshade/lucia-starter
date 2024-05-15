@@ -78,14 +78,6 @@ export const actions: Actions = {
 				});
 			}
 
-			// Create Lucia session and set session cookie
-			const session = await lucia.createSession(userId, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes
-			});
-
 			await createSession(lucia, userId, cookies);
 
 			// Redirect user to home page after successful signup
